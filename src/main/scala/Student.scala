@@ -3,17 +3,9 @@ import scala.io.Source
 import scala.util.Using
 
 object Student {
+  private var id :Int = 0
 
-  //  def listAll(): List[Student] = {
-  //
-  //    val file = new File("students.txt")
-  //    val lines = Source.fromFile(file).getLines()
-  //    lines.map(line => {
-  //      val Array(studentId, name, grade) = line.split(",")
-  //
-  //      Student(studentId.toInt, name, grade)
-  //    }).toList
-  //  }
+
 
   def read(id: Int): Any = {
 
@@ -41,7 +33,7 @@ object Student {
     val writer = new FileWriter("students.txt", true)
     writer.write(s"${id},${name},${grade}\n")
     writer.close()
-    print("write to file successfully")
+    print("Student Created Successfully")
 
   }
 
@@ -67,7 +59,48 @@ object Student {
   def update(id: Int, name: String, grade: String): Unit = {
     deleteLineFromFile(id);
     create(id, name, grade)
-    println("Student Updated Successfully")
+    println("\nStudent Updated Successfully")
+  }
+
+  def createNewStudentWindow(): Unit = {
+    println("please enter student name ")
+    var name = scala.io.StdIn.readLine()
+    println("please enter student grade ")
+    var grade = scala.io.StdIn.readLine()
+    this.id +=1
+    Student.create(this.id,name,grade)
+  }
+
+  def readStudentWindow(): Unit = {
+    println("please enter student id ")
+    val id = scala.io.StdIn.readLine().toInt
+    val result: Array[String] = Student.read(id) match {
+      case arr: Array[String] => arr
+      case _ => Array("0", "No Name", "No Grade")
+    }
+    println(s"\nThe result id = ${result(0)} name = ${result(1)} grade is ${result(2)}")
+//    result
+  }
+
+  def updateStudentWindow(): Unit = {
+    println("please enter student id ")
+    val id = scala.io.StdIn.readLine().toInt
+    println("please enter student name ")
+    val name = scala.io.StdIn.readLine()
+    println("please enter student grade ")
+    val grade = scala.io.StdIn.readLine()
+    this.update(id, name, grade)
+
+
+
+  }
+
+  def deleteStudentWindow(): Unit = {
+
+    println("please enter student id ")
+    val id: Int = scala.io.StdIn.readLine().toInt
+    this.deleteLineFromFile(id)
+
   }
 }
 
