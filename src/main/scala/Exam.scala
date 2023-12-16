@@ -4,6 +4,20 @@ import scala.io.Source
 object Exam {
   private var id: Int = 0
 
+  def index(): Unit = {
+    val filePath = "exams.txt"
+    val source = Source.fromFile(filePath)
+
+    try {
+      println("Exams Index:")
+      for (line <- source.getLines()) {
+        val recordFields = line.split(",")
+        println(s"ID: ${recordFields(0)}, Course Name: ${recordFields(1)}, Exam Date: ${recordFields(2)}")
+      }
+    } finally {
+      source.close()
+    }
+  }
   def read(id: Int): Option[Array[String]] = {
     val source = Source.fromFile("exams.txt")
 

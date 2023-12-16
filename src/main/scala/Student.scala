@@ -5,7 +5,20 @@ import scala.util.Using
 object Student {
   private var id :Int = 0
 
+  def index(): Unit = {
+    val filePath = "students.txt"
+    val source = Source.fromFile(filePath)
 
+    try {
+      println("Student Index:")
+      for (line <- source.getLines()) {
+        val recordFields = line.split(",")
+        println(s"ID: ${recordFields(0)}, Name: ${recordFields(1)}, Grade: ${recordFields(2)}")
+      }
+    } finally {
+      source.close()
+    }
+  }
 
   def read(id: Int): Any = {
 

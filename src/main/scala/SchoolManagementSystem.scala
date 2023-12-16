@@ -30,9 +30,10 @@ object SchoolManagementSystem extends App {
             |Please Choose The Operation
             |1-Create new student
             |2-Read a student
-            |3-update student
-            |4-delete student
-            |5-To Go Back
+            |3-Update student
+            |4-Delete student
+            |5-Show all students
+            |6-To Go Back
             =============================================================================================""".stripMargin)
 
     choice = scala.io.StdIn.readLine().toInt
@@ -41,7 +42,8 @@ object SchoolManagementSystem extends App {
         case 2 => Student.readStudentWindow()
         case 3 => Student.updateStudentWindow()
         case 4 => Student.deleteStudentWindow()
-        case 5 => choice = 0
+        case 5 => Student.index()
+        case 6 => choice = 0
         case _ => choice = 1
       }
       }
@@ -57,7 +59,8 @@ object SchoolManagementSystem extends App {
           |2-Read a teacher
           |3-Update teacher
           |4-Delete teacher
-          |5-To Go Back
+          |5-Show all teachers
+          |6-To Go Back
           ========================================================================================================""".stripMargin)
 
       choice = scala.io.StdIn.readLine().toInt
@@ -66,7 +69,8 @@ object SchoolManagementSystem extends App {
         case 2 => Teacher.readTeacherWindow()
         case 3 => Teacher.updateTeacherWindow()
         case 4 => Teacher.deleteTeacherWindow()
-        case 5 => choice = 0
+        case 5 => Teacher.index()
+        case 6 => choice = 0
         case _ => choice = 1
 
       }
@@ -83,7 +87,8 @@ object SchoolManagementSystem extends App {
           |2-Read a course
           |3-Update course
           |4-Delete course
-          |5-To Go Back
+          |5-Show All Courses
+          |6-To Go Back
           ========================================================================================================""".stripMargin)
 
       choice = scala.io.StdIn.readLine().toInt
@@ -92,7 +97,8 @@ object SchoolManagementSystem extends App {
         case 2 => Course.readCourseWindow()
         case 3 => Course.updateCourseWindow()
         case 4 => Course.deleteCourseWindow()
-        case 5 => choice = 0
+        case 5 => Course.index()
+        case 6 => choice = 0
         case _ => choice = 1
       }
     }
@@ -108,7 +114,8 @@ object SchoolManagementSystem extends App {
           |2-Read an exam
           |3-Update exam
           |4-Delete exam
-          |5-To Go Back
+          |5-Show All Exams
+          |6-To Go Back
           ========================================================================================================""".stripMargin)
 
       choice = scala.io.StdIn.readLine().toInt
@@ -117,7 +124,8 @@ object SchoolManagementSystem extends App {
         case 2 => Exam.readExamWindow()
         case 3 => Exam.updateExamWindow()
         case 4 => Exam.deleteExamWindow()
-        case 5 => choice = 0
+        case 5 => Exam.index()
+        case 6 => choice = 0
         case _ => choice = 1
       }
     }
