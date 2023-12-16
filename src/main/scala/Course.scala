@@ -1,5 +1,6 @@
 import java.io.{File, FileWriter, PrintWriter}
 import scala.io.Source
+import scala.util.control.Breaks.break
 
 object Course {
   private var id: Int = 0
@@ -8,25 +9,34 @@ object Course {
     val filePath = "courses.txt"
     val source = Source.fromFile(filePath)
 
-    try {
       println("Courses Index:")
       for (line <- source.getLines()) {
         val recordFields = line.split(",")
         println(s"ID: ${recordFields(0)}, Course Name: ${recordFields(1)}, Instructor: ${recordFields(2)}")
       }
-    } finally {
       source.close()
-    }
   }
-  def read(id: Int): Option[Array[String]] = {
+
+  def read(id: Int): Any = {
+
     val source = Source.fromFile("courses.txt")
+    var flag = 0
+    for (line <- source.getLines()) {
+      // Assuming records are comma-separated values
+      val recordFields = line.split(",")
 
-    val result = source.getLines().collectFirst {
-      case line if line.startsWith(s"$id,") => line.split(",")
+      // Process the fields as needed
+      val examId: Int = recordFields(0).toInt
+      if (id == examId) {
+        flag = 1
+        println(s"Exam with ID $id: ID = ${recordFields(0)}, Course Name = ${recordFields(1)}, Instructor = ${recordFields(2)}")
+        source.close()
+        break
+      }
+
     }
-
+    if (flag == 0) println(s"Exam with id = ${id} is not found")
     source.close()
-    result
   }
 
   def create(id: Int, name: String, instructor: String): Unit = {
@@ -69,12 +79,8 @@ object Course {
   def readCourseWindow(): Unit = {
     println("Please enter course id: ")
     val id = scala.io.StdIn.readLine().toInt
-    val result: Option[Array[String]] = read(id)
+    read(id)
 
-    result match {
-      case Some(arr) => println(s"\nThe result id = ${arr(0)} name = ${arr(1)} instructor = ${arr(2)}")
-      case None      => println("Course not found.")
-    }
   }
 
   def updateCourseWindow(): Unit = {

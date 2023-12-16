@@ -1,5 +1,7 @@
 import akka.actor.{ActorSystem, Props}
 
+import scala.util.control.Breaks.break
+
 object SchoolManagementSystem extends App {
   val system = ActorSystem("StudentSystem")
   val studentActor = system.actorOf(Props[StudentActor], "studentActor")
@@ -25,6 +27,8 @@ object SchoolManagementSystem extends App {
       case 5 => choice = 0
     }
   }
+  println("Program Closed Successfully")
+
 
   def studentCruds(): Unit = {
     var choice = 1
@@ -124,6 +128,9 @@ object SchoolManagementSystem extends App {
 
 
   def courseCruds(): Unit = {
+    val system = ActorSystem("ActorSystem")
+    val courseActor = system.actorOf(Props[CourseActor], "courseActor")
+
     var choice = 1
     while (choice != 0) {
       println(
@@ -133,22 +140,42 @@ object SchoolManagementSystem extends App {
           |2-Read a course
           |3-Update course
           |4-Delete course
-          |5-Show All Courses
+          |5-Show all courses
           |6-To Go Back
           ========================================================================================================""".stripMargin)
 
       choice = scala.io.StdIn.readLine().toInt
+
       choice match {
-        case 1 => Course.createNewCourseWindow()
-        case 2 => Course.readCourseWindow()
-        case 3 => Course.updateCourseWindow()
-        case 4 => Course.deleteCourseWindow()
-        case 5 => Course.index()
-        case 6 => choice = 0
-        case _ => choice = 1
+        case 1 =>
+          courseActor ! Course.createNewCourseWindow()
+
+        case 2 =>
+          println("Please enter course id:")
+          val id = scala.io.StdIn.readInt()
+          courseActor ! ReadCourse(id)
+
+        case 3 =>
+          Course.updateCourseWindow()
+
+        case 4 =>
+          println("Please enter course id:")
+          val id = scala.io.StdIn.readInt()
+          courseActor ! DeleteCourse(id)
+
+        case 5 =>
+          courseActor ! IndexCourses()
+
+        case 6 =>
+          choice = 0
+
+        case _ =>
+          println("Invalid choice. Please try again.")
       }
     }
   }
+
+
 
   def examCruds(): Unit = {
     val system = ActorSystem("ActorSystem")
