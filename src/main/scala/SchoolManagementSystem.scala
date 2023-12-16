@@ -1,4 +1,8 @@
+import akka.actor.{ActorSystem, Props}
+
 object SchoolManagementSystem extends App {
+  val system = ActorSystem("StudentSystem")
+  val studentActor = system.actorOf(Props[StudentActor], "studentActor")
 
   var choice = 1
   while (choice != 0) {
@@ -8,7 +12,7 @@ object SchoolManagementSystem extends App {
         |1-Open Student Module
         |2-Open Teacher Module
         |3-Open Course Module
-        |4-Exam
+        |4-Open Exam Module
         |5-To Terminate
         ================================================================================================""".stripMargin)
 
@@ -21,35 +25,57 @@ object SchoolManagementSystem extends App {
       case 5 => choice = 0
     }
   }
+
   def studentCruds(): Unit = {
     var choice = 1
-    while(choice != 0)
-      {
-        println(
-          """
-            |Please Choose The Operation
-            |1-Create new student
-            |2-Read a student
-            |3-Update student
-            |4-Delete student
-            |5-Show all students
-            |6-To Go Back
+    while (choice != 0) {
+      println(
+        """
+          |Please Choose The Operation
+          |1-Create new student
+          |2-Read a student
+          |3-Update student
+          |4-Delete student
+          |5-Show all students
+          |6-To Go Back
             =============================================================================================""".stripMargin)
 
-    choice = scala.io.StdIn.readLine().toInt
-        choice match {
-        case 1 => Student.createNewStudentWindow()
-        case 2 => Student.readStudentWindow()
-        case 3 => Student.updateStudentWindow()
-        case 4 => Student.deleteStudentWindow()
-        case 5 => Student.index()
-        case 6 => choice = 0
-        case _ => choice = 1
+      choice = scala.io.StdIn.readLine().toInt
+      choice match {
+        case 1
+        =>
+          studentActor ! Student.createNewStudentWindow()
+        case 2
+        =>
+          println("Please enter student id:")
+          val id = scala.io.StdIn.readInt()
+          studentActor ! ReadStudent(id)
+        case 3
+        =>
+          Student.updateStudentWindow()
+        case 4
+        =>
+          println("Please enter student id:")
+          val id = scala.io.StdIn.readInt()
+          studentActor ! DeleteStudent(id)
+        case 5
+        =>
+          studentActor ! IndexStudents()
+        case 6
+        =>
+          choice = 0
+        case _ =>
+          println("Invalid choice. Please try again.")
       }
-      }
-}
+
+    }
+  }
 
   def teacherCruds(): Unit = {
+
+    val system = ActorSystem("ActorSystem")
+    val teacherActor = system.actorOf(Props[TeacherActor], "teacherActor")
+
     var choice = 1
     while (choice != 0) {
       println(
@@ -64,18 +90,38 @@ object SchoolManagementSystem extends App {
           ========================================================================================================""".stripMargin)
 
       choice = scala.io.StdIn.readLine().toInt
-      choice match {
-        case 1 => Teacher.createNewTeacherWindow()
-        case 2 => Teacher.readTeacherWindow()
-        case 3 => Teacher.updateTeacherWindow()
-        case 4 => Teacher.deleteTeacherWindow()
-        case 5 => Teacher.index()
-        case 6 => choice = 0
-        case _ => choice = 1
 
+      choice match {
+        case 1 =>
+          teacherActor ! Teacher.createNewTeacherWindow()
+
+        case 2 =>
+          println("Please enter teacher id:")
+          val id = scala.io.StdIn.readInt()
+          teacherActor ! ReadTeacher(id)
+
+        case 3 =>
+          Teacher.updateTeacherWindow()
+
+        case 4 =>
+          println("Please enter teacher id:")
+          val id = scala.io.StdIn.readInt()
+          teacherActor ! DeleteTeacher(id)
+
+        case 5 =>
+          teacherActor ! IndexTeachers()
+
+        case 6 =>
+          choice = 0
+
+        case _ =>
+          println("Invalid choice. Please try again.")
       }
+
+
     }
   }
+
 
   def courseCruds(): Unit = {
     var choice = 1
@@ -105,6 +151,9 @@ object SchoolManagementSystem extends App {
   }
 
   def examCruds(): Unit = {
+    val system = ActorSystem("ActorSystem")
+    val examActor = system.actorOf(Props[ExamActor], "examActor")
+
     var choice = 1
     while (choice != 0) {
       println(
@@ -114,19 +163,37 @@ object SchoolManagementSystem extends App {
           |2-Read an exam
           |3-Update exam
           |4-Delete exam
-          |5-Show All Exams
+          |5-Show all exams
           |6-To Go Back
-          ========================================================================================================""".stripMargin)
+         ========================================================================================================""".stripMargin)
 
       choice = scala.io.StdIn.readLine().toInt
+
       choice match {
-        case 1 => Exam.createNewExamWindow()
-        case 2 => Exam.readExamWindow()
-        case 3 => Exam.updateExamWindow()
-        case 4 => Exam.deleteExamWindow()
-        case 5 => Exam.index()
-        case 6 => choice = 0
-        case _ => choice = 1
+        case 1 =>
+          examActor ! Exam.createNewExamWindow()
+
+        case 2 =>
+          println("Please enter exam id:")
+          val id = scala.io.StdIn.readInt()
+          examActor ! ReadExam(id)
+
+        case 3 =>
+          Exam.updateExamWindow()
+
+        case 4 =>
+          println("Please enter exam id:")
+          val id = scala.io.StdIn.readInt()
+          examActor ! DeleteExam(id)
+
+        case 5 =>
+          examActor ! IndexExams()
+
+        case 6 =>
+          choice = 0
+
+        case _ =>
+          println("Invalid choice. Please try again.")
       }
     }
   }

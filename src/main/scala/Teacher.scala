@@ -1,5 +1,6 @@
 import java.io.{File, FileWriter, PrintWriter}
 import scala.io.Source
+import scala.util.control.Breaks.break
 
 object Teacher {
   private var id: Int = 0
@@ -19,15 +20,24 @@ object Teacher {
     }
   }
 
-  def read(id: Int): Option[Array[String]] = {
+  def read(id: Int)= {
     val source = Source.fromFile("teachers.txt")
+    var flag = 0
+    for (line <- source.getLines()) {
+      // Assuming records are comma-separated values
+      val recordFields = line.split(",")
 
-    val result = source.getLines().collectFirst {
-      case line if line.startsWith(s"$id,") => line.split(",")
-    }
+      // Process the fields as needed
+      val studentId: Int = recordFields(0).toInt
+      if (id == studentId) {
+        flag = 1
+        println(s"Teacher with ID $id: ID=${recordFields(0)}, Name=${recordFields(1)}, Subject=${recordFields(2)}")
+        source.close()
+        break
+      }
 
-    source.close()
-    result
+  }
+    if(flag == 0 ){println("Teacher Not Found")}
   }
 
   def create(id: Int, name: String, subject: String): Unit = {
@@ -70,12 +80,9 @@ object Teacher {
   def readTeacherWindow(): Unit = {
     println("Please enter teacher id: ")
     val id = scala.io.StdIn.readLine().toInt
-    val result: Option[Array[String]] = read(id)
+   read(id)
 
-    result match {
-      case Some(arr) => println(s"\nThe result id = ${arr(0)} name = ${arr(1)} subject = ${arr(2)}")
-      case None      => println("Teacher not found.")
-    }
+
   }
 
   def updateTeacherWindow(): Unit = {
